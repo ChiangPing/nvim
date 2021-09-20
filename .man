@@ -1,0 +1,11 @@
+man $* &> /dev/null
+if [ $? -eq 0 ]; then
+  man $*
+else
+  cppman $* &> /dev/null
+  if [ $? -eq 0 ]; then
+    cppman $*
+  else
+    echo "none"
+  fi
+fi
