@@ -580,11 +580,11 @@ nnoremap <silent> MN :call <SID>show_CPPManual()<CR>
 " === autoformat
 " ===
 " autocmd FileType c,cpp autocmd BufWritePre * :Autoformat
-" noremap <F3> :Autoformat<CR>:w<CR>
-" let g:autoformat_verbosemode=1
-" let g:formatdef_allman = '"astyle --style=allman --pad-oper --indent=spaces=2"'
-" let g:formatters_cpp = ['allman']
-" let g:formatters_c = ['allman']
+noremap <F3> :Autoformat<CR>
+let g:autoformat_verbosemode=1
+let g:formatdef_allman = '"astyle --style=allman --pad-oper --indent=spaces=2"'
+let g:formatters_cpp = ['allman']
+let g:formatters_c = ['allman']
 
 " autoformat
 " nnoremap <leader>ff :call FormatCode("", "file")<CR>

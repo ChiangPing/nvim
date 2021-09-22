@@ -22,7 +22,7 @@ export GTK_IM_MODULE="fcitx"
 export QT_IM_MODULE="fcitx"
 
 # SET PATH FOR NODEJS
-export NODE_HOME=/opt/software/node-v14.17.3-linux-x64
+export NODE_HOME=/opt/software/node-v14.17.6-linux-x64
 export PATH=$NODE_HOME/bin:$PATH
 
 alias 'ssh404_brighter'='ssh brighter@10.112.81.222 -p 2222'
@@ -45,4 +45,4 @@ alias 'cmake'='cmake -H. -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE
 
 # PROXY
 alias setproxy='export http_proxy=http://127.0.0.1:8889; export https_proxy=$http_proxy; echo "HTTP Proxy on";'
-alias unsetproxy='unset http_proxy; unset https_proxy; echo 'HTTP Proxy off';'
+alias unsetproxy='unset http_proxy; unset https_proxy; echo "HTTP Proxy off";'
