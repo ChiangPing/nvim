@@ -226,8 +226,8 @@ noremap <LEADER>sw :set wrap<CR>
 
 " press f10 to show hlgroup
 function! SynGroup()
-	let l:s = synID(line('.'), col('.'), 1)
-	echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+  let l:s = synID(line('.'), col('.'), 1)
+  echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 map <F10> :call SynGroup()<CR>
 
@@ -239,9 +239,9 @@ map <F10> :call SynGroup()<CR>
 " === Auto load for first time uses
 " ===
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
-	silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 
@@ -278,8 +278,8 @@ Plug 'SirVer/ultisnips'
 Plug 'dense-analysis/ale'
 Plug 'lambdalisue/vim-manpager'
 Plug 'gauteh/vim-cppman'
-" Plug 'sbdchd/neoformat'
-Plug 'Chiel92/vim-autoformat'
+Plug 'sbdchd/neoformat'
+" Plug 'Chiel92/vim-autoformat'
 
 
 "markdown
@@ -329,14 +329,14 @@ let g:fzf_preview_window = ['up:45%', 'ctrl-/']
 
 " Make Ripgrep ONLY search file contents and not filenames
 command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'})
-  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}),
-  \   <bang>0)
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'})
+      \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}),
+      \   <bang>0)
 
-  " \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-  " \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}, 'right:50%', '?'),
+" \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+" \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}, 'right:50%', '?'),
 " Fzf layout
 let g:fzf_layout = {'window': {'width': 1, 'height': 1 }}
 
@@ -391,17 +391,17 @@ nmap <leader>- <Plug>AirlineSelectPrevTab
 nmap <leader>= <Plug>AirlineSelectNextTab
 
 let g:airline#extensions#tabline#buffer_idx_format = {
-  \ '0': '⓪ ',
-  \ '1': '① ',
-  \ '2': '② ',
-  \ '3': '③ ',
-  \ '4': '④ ',
-  \ '5': '⑤ ',
-  \ '6': '⑥ ',
-  \ '7': '⑦ ',
-  \ '8': '⑧ ',
-  \ '9': '⑨ ',
-  \}
+      \ '0': '⓪ ',
+      \ '1': '① ',
+      \ '2': '② ',
+      \ '3': '③ ',
+      \ '4': '④ ',
+      \ '5': '⑤ ',
+      \ '6': '⑥ ',
+      \ '7': '⑦ ',
+      \ '8': '⑧ ',
+      \ '9': '⑨ ',
+      \}
 
 " airline symbols
 if !exists('g:airline_symbols')
@@ -447,9 +447,10 @@ let g:NERDCreateDefaultMappings = 1
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' },
-                             \ 'cpp': { 'left': '/**', 'right': '*/' },
-                             \ 'h': { 'left': '/**', 'right': '*/' }}
+let g:NERDCustomDelimiters = {
+      \'c': { 'left': '/**','right': '*/' },
+      \ 'cpp': { 'left': '/**', 'right': '*/' },
+      \ 'h': { 'left': '/**', 'right': '*/' }}
 
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
@@ -460,10 +461,10 @@ let g:NERDToggleCheckAllLines = 1
 " === coc
 " ===
 let g:coc_global_extensions = [
-  \ 'coc-clangd',
-  \ 'coc-snippets',
-  \ 'coc-json',
-  \ 'coc-pairs']
+      \ 'coc-clangd',
+      \ 'coc-snippets',
+      \ 'coc-json',
+      \ 'coc-pairs']
 
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
@@ -479,7 +480,7 @@ endfunction
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -532,9 +533,9 @@ let g:UltiSnipsSnippetDirectories = [$HOME.'/.config/nvim/Ultisnips/', $HOME.'/.
 " ===
 " set fenc=
 let g:ale_linters = {
-\   'cpp': ['g++'],
-\   'c': ['gcc'],
-\}
+      \   'cpp': ['g++'],
+      \   'c': ['gcc'],
+      \}
 let g:ale_disable_lsp = 1
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
@@ -560,7 +561,7 @@ nmap <Leader>d :ALEDetail<CR>
 " === manpager
 " ===
 function! s:show_Manual()
-    execute 'Man '.expand('<cword>')
+  execute 'Man '.expand('<cword>')
 endfunction
 
 nnoremap <silent> MM :call <SID>show_Manual()<CR>
@@ -570,21 +571,43 @@ nnoremap <silent> MM :call <SID>show_Manual()<CR>
 " === cppman
 " ===
 function! s:show_CPPManual()
-    execute 'Cppman '.expand('<cword>')
+  execute 'Cppman '.expand('<cword>')
 endfunction
 
 nnoremap <silent> MN :call <SID>show_CPPManual()<CR>
 
 
 " ===
+" === neoformat
+" ===
+noremap <F3> :Neoformat<CR>
+" augroup fmt
+"   autocmd!
+"   autocmd BufWritePre * undojoin | Neoformat
+" augroup END
+let g:neoformat_basic_format_align = 1
+let g:neoformat_basic_format_retab = 1
+let g:neoformat_c_clangformat = {
+      \ 'exe': 'clang-format',
+      \ 'args': ['-style="{ReflowComments: false}"'],
+      \ }
+let g:neoformat_cpp_clangformat = {
+      \ 'exe': 'clang-format',
+      \ 'args': ['-style="{ReflowComments: false}"'],
+      \}
+let g:neoformat_enabled_cpp = ['clangformat']
+let g:neoformat_enabled_c = ['clangformat']
+
+
+" ===
 " === autoformat
 " ===
 " autocmd FileType c,cpp autocmd BufWritePre * :Autoformat
-noremap <F3> :Autoformat<CR>
-let g:autoformat_verbosemode=1
-let g:formatdef_allman = '"astyle --style=allman --pad-oper --indent=spaces=2"'
-let g:formatters_cpp = ['allman']
-let g:formatters_c = ['allman']
+" noremap <F3> :Autoformat<CR>
+" let g:autoformat_verbosemode=1
+" let g:formatdef_allman = '"astyle --style=allman --pad-oper --indent=spaces=2"'
+" let g:formatters_cpp = ['allman']
+" let g:formatters_c = ['allman']
 
 " autoformat
 " nnoremap <leader>ff :call FormatCode("", "file")<CR>
@@ -625,19 +648,19 @@ autocmd FileType markdown nnoremap <silent> <C-p> :call mdip#MarkdownClipboardIm
 let g:vmt_auto_update_on_save = 0
 
 function RToc()
-    exe "/-toc .* -->"
-    let lstart=line('.')
-    exe "/-toc -->"
-    let lnum=line('.')
-    execute lstart.",".lnum."g/           /d"
+  exe "/-toc .* -->"
+  let lstart=line('.')
+  exe "/-toc -->"
+  let lnum=line('.')
+  execute lstart.",".lnum."g/           /d"
 endfunction
 
 let g:bullets_enabled_file_types = [
-			\ 'markdown',
-			\ 'text',
-			\ 'gitcommit',
-			\ 'scratch'
-			\]
+      \ 'markdown',
+      \ 'text',
+      \ 'gitcommit',
+      \ 'scratch'
+      \]
 
 " vim-table-mode
 noremap <LEADER>tm :TableModeToggle<CR>
