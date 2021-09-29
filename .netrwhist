@@ -1,3 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =1
+let g:netrw_dirhistcnt =3
+let g:netrw_dirhist_3='/home/brighter/workspace/leveldb/db'
+let g:netrw_dirhist_2='/var/lib/dpkg/info'
 let g:netrw_dirhist_1='/etc/apt/sources.list.d'

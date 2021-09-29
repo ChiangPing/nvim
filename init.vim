@@ -300,7 +300,7 @@ call plug#end()
 " ===
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '-'
-let NERDTreeIgnore = ['\.out$','\.o$']
+let NERDTreeIgnore = ['\.out$','\.o$','CMakeFiles','build','\.cmake$']
 let g:NERDTreeHidden=0
 
 nnoremap <C-n> :NERDTreeToggle<CR>
