@@ -604,43 +604,6 @@ let g:neoformat_enabled_c = ['clangformat']
 
 
 " ===
-" === autoformat
-" ===
-" autocmd FileType c,cpp autocmd BufWritePre * :Autoformat
-" noremap <F3> :Autoformat<CR>
-" let g:autoformat_verbosemode=1
-" let g:formatdef_allman = '"astyle --style=allman --pad-oper --indent=spaces=2"'
-" let g:formatters_cpp = ['allman']
-" let g:formatters_c = ['allman']
-
-" autoformat
-" nnoremap <leader>ff :call FormatCode("", "file")<CR>
-" vnoremap <leader>ff :call FormatCode(visualmode(), "file")<CR>
-" nnoremap <leader>gf :call FormatCode("", "Google")<CR>
-" vnoremap <leader>gf :call FormatCode(visualmode(), "Google")<CR>
-" nnoremap <leader>cf :call FormatCode("", "Chromium")<CR>
-" vnoremap <leader>cf :call FormatCode(visualmode(), "Chromium")<CR>
-" nnoremap <leader>lf :call FormatCode("", "LLVM")<CR>
-" vnoremap <leader>lf :call FormatCode(visualmode(), "LLVM")<CR>
-"
-" func! FormatCode(exe_mode, style) range
-"   if a:exe_mode == ""
-"     let firstline_no = 1
-"     let lastline_no = line("$")
-"   else
-"     let firstline_no = a:firstline
-"     let lastline_no = a:lastline
-"   endif
-"   let l:save_formatdef = g:formatdef_clangformat
-"   let l:tmpa = join(["clang-format --lines=", firstline_no, ":", lastline_no], "")
-"   let g:formatdef_clangformat = "'" . l:tmpa . " --assume-filename=' . bufname('%') . ' -style=" . a:style . "'"
-"   let formatcommand = ":Autoformat"
-"   exec formatcommand
-"   let g:formatdef_clangformat = l:save_formatdef
-" endfunc
-
-
-" ===
 " === markdown
 " ===
 " md-img-paste
