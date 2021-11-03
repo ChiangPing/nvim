@@ -25,6 +25,9 @@ export QT_IM_MODULE="fcitx"
 export NODE_HOME=/opt/software/node-v14.17.6-linux-x64
 export PATH=$NODE_HOME/bin:$PATH
 
+# SET PATH FOR GO
+export PATH=$PATH:/usr/local/go/bin
+
 alias 'ssh404_brighter'='ssh brighter@10.112.81.222 -p 2222'
 alias 'ssh404_shark'='ssh shark@10.112.81.222 -p 2222'
 alias 'ssh418'='ssh brighter@10.112.225.55 -p 2222'
@@ -34,14 +37,14 @@ alias 'cl'='clear'
 alias 'lg'='ls -a | grep'
 alias 'gnr'='grep -n -r'
 alias 'nt=cat << EOF >> .notes'
-alias 'man'='bash /home/brighter/.config/nvim/.man'
+# alias 'man'='bash /home/brighter/.config/nvim/.man'
 
 alias 'ta'='tmux a -t'
 alias 'tn'='tmux new -s'
 
 alias 'gcc'='gcc -fsanitize=address -ggdb'
 alias 'make'='make -j4'
-alias 'cmake'='cmake -H. -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES'
+# alias 'cmake'='cmake -H. -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES'
 
 # PROXY
 alias setproxy='export http_proxy=http://127.0.0.1:8889; export https_proxy=$http_proxy; echo "HTTP Proxy on";'
