@@ -37,7 +37,7 @@ set tw=0
 " delay
 set ttimeoutlen=0
 set notimeout
-set updatetime=300
+set updatetime=200
 
 " indent
 set autoindent
