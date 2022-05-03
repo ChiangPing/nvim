@@ -77,10 +77,10 @@ set ttyfast "should make scrolling faster"
 set lazyredraw "same as above"
 
 " backup and undo
-set nobackup
-set nowritebackup
 silent !mkdir -p ~/.config/nvim/tmp/undo
 silent !mkdir -p ~/.config/nvim/tmp/sessions
+set nobackup
+set nowritebackup
 " silent !mkdir -p ~/.config/nvim/tmp/backup
 " set backupdir=~/.config/nvim/tmp/backup,.
 " set directory=~/.config/nvim/tmp/backup,.
@@ -103,20 +103,20 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 let mapleader=" "
 
 " Save & quit
-noremap <LEADER>w :w<CR>
+noremap <leader>w :w<CR>
 map w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
-noremap <LEADER>q :q<CR>
+noremap <leader>q :q<CR>
 noremap <C-q> :qa<CR>
 
 " Open the vimrc file anytime
-noremap <LEADER>sr :e ~/.config/nvim/init.vim<CR>
+noremap <leader>sr :e ~/.config/nvim/init.vim<CR>
 
 " Indentation
 nnoremap < <<
 nnoremap > >>
 
 " Search
-noremap <LEADER><CR> :nohlsearch<CR>
+noremap <leader><CR> :nohlsearch<CR>
 
 
 " ===
@@ -152,10 +152,10 @@ cnoremap <C-w> <S-Right>
 " === Window management
 " ===
 " Use <space> + arrow keys for moving the cursor around windows
-noremap <LEADER>h <C-w>h
-noremap <LEADER>j <C-w>j
-noremap <LEADER>k <C-w>k
-noremap <LEADER>l <C-w>l
+noremap <leader>h <C-w>h
+noremap <leader>j <C-w>j
+noremap <leader>k <C-w>k
+noremap <leader>l <C-w>l
 
 " split the screens to up (horizontal), down (horizontal), left (vertical), right (vertical)
 noremap sk :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
@@ -181,26 +181,23 @@ noremap bh <C-w>b<C-w>H
 " ===
 " === Others useful stuff
 " ===
-noremap <LEADER>m :marks<CR>
+noremap <leader>m :marks<CR>
 
 " Opening a terminal window
-noremap <LEADER>/ :set splitbelow<CR>:split<CR>:res +5<CR>:term<CR>
+noremap <leader>/ :set splitbelow<CR>:split<CR>:res +5<CR>:term<CR>
 let g:neoterm_autoscroll = 1
 autocmd TermOpen term://* startinsert
 tnoremap <C-N> <C-\><C-N>
 tnoremap <C-O> <C-\><C-N><C-O>
 
 " Spelling Check with <space>sc
-noremap <LEADER>sc :set spell!<CR>
-
-" Call figlet
-noremap tx :r !figlet 
+noremap <leader>sc :set spell!<CR>
 
 " find and replace
 noremap \s :%s//g<left><left>
 
 " set wrap
-noremap <LEADER>sw :set wrap<CR>
+noremap <leader>sw :set wrap<CR>
 
 " press f10 to show hlgroup
 function! SynGroup()
@@ -239,7 +236,6 @@ Plug 'ludovicchabant/vim-gutentags'
 
 
 " display
-Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
 
@@ -252,7 +248,6 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 
 
 " Programming
-" Plug 'tpope/vim-commentary'
 Plug 'preservim/nerdcommenter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'honza/vim-snippets'
@@ -261,7 +256,6 @@ Plug 'dense-analysis/ale'
 Plug 'lambdalisue/vim-manpager'
 Plug 'gauteh/vim-cppman'
 Plug 'sbdchd/neoformat'
-" Plug 'Chiel92/vim-autoformat'
 
 
 "markdown
@@ -322,8 +316,8 @@ command! -bang -nargs=* Rg
 " Fzf layout
 let g:fzf_layout = {'window': {'width': 1, 'height': 1 }}
 
-noremap <LEADER>H  :History<CR>
-noremap <LEADER>r  :Rg<CR>
+noremap <leader>H  :History<CR>
+noremap <leader>r  :Rg<CR>
 " noremap fs  :Lines<CR>
 " noremap bb  :Buffers<CR>
 
@@ -516,7 +510,7 @@ noremap <F2> :CocCommand clangd.switchSourceHeader<CR>
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
-nnoremap <LEADER>e :CocDiagnostics<CR>
+nnoremap <leader>e :CocDiagnostics<CR>
 
 
 " ===
@@ -638,7 +632,7 @@ let g:bullets_enabled_file_types = [
       \]
 
 " vim-table-mode
-noremap <LEADER>tm :TableModeToggle<CR>
+noremap <leader>tm :TableModeToggle<CR>
 " let g:table_mode_disable_mappings = 1
 let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 
