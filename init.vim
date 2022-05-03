@@ -226,10 +226,11 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 " enhacement tools
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'easymotion/vim-easymotion'
 Plug 'preservim/tagbar'
 Plug 'ludovicchabant/vim-gutentags'
@@ -238,13 +239,12 @@ Plug 'ludovicchabant/vim-gutentags'
 " display
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
-
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'petertriho/nvim-scrollbar'
+Plug 'karb94/neoscroll.nvim'
 Plug 'tpope/vim-surround'
 Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
-Plug 'octol/vim-cpp-enhanced-highlight'
 
 
 " Programming
@@ -256,6 +256,7 @@ Plug 'dense-analysis/ale'
 Plug 'lambdalisue/vim-manpager'
 Plug 'gauteh/vim-cppman'
 Plug 'sbdchd/neoformat'
+Plug 'folke/trouble.nvim'
 
 
 "markdown
@@ -283,11 +284,6 @@ nnoremap <C-n> :NERDTreeToggle<CR>
 
 
 " ===
-" === startify
-" ===
-let g:startify_change_to_dir = 0
-
-" ===
 " === Undotree
 " ===
 nnoremap <leader>u :UndotreeToggle<CR>
@@ -296,30 +292,40 @@ nnoremap <leader>u :UndotreeToggle<CR>
 " ===
 " === fzf
 " ===
-let g:fzf_action = { 'ctrl-e': 'edit' }
+" let g:fzf_action = { 'ctrl-e': 'edit' }
+" 
+" nmap <C-p> :Files<CR>
+" nmap <C-e> :Buffers<CR>
+" 
+" let g:fzf_preview_window = ['up:45%', 'ctrl-/']
+" 
+" " Make Ripgrep ONLY search file contents and not filenames
+" command! -bang -nargs=* Rg
+"       \ call fzf#vim#grep(
+"       \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
+"       \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'})
+"       \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}),
+"       \   <bang>0)
+" 
+" " \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+" " \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}, 'right:50%', '?'),
+" " Fzf layout
+" let g:fzf_layout = {'window': {'width': 1, 'height': 1 }}
+" 
+" noremap <leader>H  :History<CR>
+" noremap <leader>r  :Rg<CR>
+" " noremap fs  :Lines<CR>
+" " noremap bb  :Buffers<CR>
 
-nmap <C-p> :Files<CR>
-nmap <C-e> :Buffers<CR>
 
-let g:fzf_preview_window = ['up:45%', 'ctrl-/']
-
-" Make Ripgrep ONLY search file contents and not filenames
-command! -bang -nargs=* Rg
-      \ call fzf#vim#grep(
-      \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-      \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'})
-      \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}),
-      \   <bang>0)
-
-" \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-" \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}, 'right:50%', '?'),
-" Fzf layout
-let g:fzf_layout = {'window': {'width': 1, 'height': 1 }}
-
-noremap <leader>H  :History<CR>
-noremap <leader>r  :Rg<CR>
-" noremap fs  :Lines<CR>
-" noremap bb  :Buffers<CR>
+" ===
+" === telescope
+" ===
+nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({}))<cr>
+nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown({}))<cr>
+nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown({}))<cr>
+nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags(require('telescope.themes').get_dropdown({}))<cr>
+nnoremap <leader>fo <cmd>lua require('telescope.builtin').oldfiles(require('telescope.themes').get_dropdown({}))<cr>
 
 
 " ===
@@ -333,9 +339,7 @@ let g:EasyMotion_smartcase = 1
 " === tagbar
 " ===
 set tags=./.tags;,.tags
-
-nmap <F8> :TagbarToggle<CR>
-
+nmap <A-n> :TagbarToggle<CR>
 " vim-gutentags
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 let g:gutentags_ctags_tagfile = '.tags'
@@ -358,36 +362,35 @@ colorscheme catppuccin
 " ===
 lua << EOF
 require("bufferline").setup({
-        options = {
-            numbers = "ordinal",
-            modified_icon = "✥",
-            buffer_close_icon = "",
-            left_trunc_marker = "",
-            right_trunc_marker = "",
-            max_name_length = 14,
-            max_prefix_length = 13,
-            tab_size = 20,
-            show_buffer_close_icons = true,
-            show_buffer_icons = true,
-            show_tab_indicators = true,
-            diagnostics = "nvim_lsp",
-            always_show_bufferline = true,
-            separator_style = "thin",
-            offsets = {
-                {
-                    filetype = "NvimTree",
-                    text = "File Explorer",
-                    text_align = "center",
-                    padding = 1,
-                },
-            },
-        },
-    })
+options = {
+  numbers = "ordinal",
+  modified_icon = "✥",
+  buffer_close_icon = "",
+  left_trunc_marker = "",
+  right_trunc_marker = "",
+  max_name_length = 14,
+  max_prefix_length = 13,
+  tab_size = 20,
+  show_buffer_close_icons = true,
+  show_buffer_icons = true,
+  show_tab_indicators = true,
+  diagnostics = "nvim_lsp",
+  always_show_bufferline = true,
+  separator_style = "thin",
+  offsets = {
+    {
+        filetype = "NvimTree",
+        text = "File Explorer",
+        text_align = "center",
+        padding = 1,
+    },
+  },
+},
+})
 EOF
 
 nnoremap <silent><leader>= :BufferLineCycleNext<CR>
 nnoremap <silent><leader>- :BufferLineCyclePrev<CR>
-
 nnoremap <silent><leader>1 :BufferLineGoToBuffer 1<CR>
 nnoremap <silent><leader>2 :BufferLineGoToBuffer 2<CR>
 nnoremap <silent><leader>3 :BufferLineGoToBuffer 3<CR>
@@ -397,26 +400,94 @@ nnoremap <silent><leader>6 :BufferLineGoToBuffer 6<CR>
 nnoremap <silent><leader>7 :BufferLineGoToBuffer 7<CR>
 nnoremap <silent><leader>8 :BufferLineGoToBuffer 8<CR>
 nnoremap <silent><leader>9 :BufferLineGoToBuffer 9<CR>
-
 " These commands will sort buffers by directory, language, or a custom criteria
 nnoremap <silent>be :BufferLineSortByExtension<CR>
 nnoremap <silent>bd :BufferLineSortByDirectory<CR>
 nnoremap <silent><mymap> :lua require'bufferline'.sort_buffers_by(function (buf_a, buf_b) return buf_a.id < buf_b.id end)<CR>
 
+" ===
+" === lualine
+" ===
+lua << END
+require('lualine').setup({
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = "|",
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff'},
+    lualine_c = {'filename'},
+    lualine_x = {
+      {
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        symbols = { error = " ", warn = " ", info = " " },
+      },
+    },
+    lualine_y = {
+      {
+        "filetype",
+        "encoding",
+      },
+      {
+        "fileformat",
+        icons_enabled = true,
+        symbols = {
+          unix = "LF",
+          dos = "CRLF",
+          mac = "CR",
+        },
+      },
+    },
+    lualine_z = {'progress', 'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+    },
+  tabline = {},
+  extensions = {}
+})
+END
+
 
 " ===
-" === vim-airline
+" === scrollbar
 " ===
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-let g:airline_symbols.colnr = 'C:'
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ' L:'
-let g:airline_symbols.maxlinenr = '☰ '
-let g:airline_symbols.dirty='⚡'
+lua << END
+require("scrollbar").setup()
+END
 
-let g:airline#extensions#whitespace#enabled = 0
+
+" ===
+" === neoscroll
+" ===
+lua << END
+require('neoscroll').setup({
+  mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
+  '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
+  hide_cursor = true,          -- Hide cursor while scrolling
+  stop_eof = true,             -- Stop at <EOF> when scrolling downwards
+  use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
+  respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+  cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+  easing_function = nil,       -- Default easing function
+  pre_hook = nil,              -- Function to run before the scrolling animation starts
+  post_hook = nil,             -- Function to run after the scrolling animation ends
+  performance_mode = false,    -- Disable "Performance Mode" on all buffers.
+})
+END
+
 
 " ===
 " === rainbow
@@ -425,21 +496,11 @@ let g:rainbow_active = 1
 
 
 " ===
-" === indentLine
+" === indentline
 " ===
 autocmd FileType json,markdown let g:indentLine_conceallevel = 0
 let g:indent_guides_guide_size            = 1  " 指定对齐线的尺寸
 let g:indent_guides_start_level           = 2  " 从第二层开始可视化显示缩进
-
-
-" ===
-" === vim-cpp-highlight
-" ===
-let g:cpp_class_scope_highlight = 1
-let g:cpp_member_variable_highlight = 1
-let g:cpp_class_decl_highlight = 1
-let g:cpp_posix_standard = 1
-let g:cpp_experimental_template_highlight = 1
 
 
 " ===
@@ -450,9 +511,9 @@ let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDCustomDelimiters = {
-      \'c': { 'left': '/**','right': '*/' },
-      \ 'cpp': { 'left': '/**', 'right': '*/' },
-      \ 'h': { 'left': '/**', 'right': '*/' }}
+  \'c': { 'left': '/**','right': '*/' },
+  \ 'cpp': { 'left': '/**', 'right': '*/' },
+  \ 'h': { 'left': '/**', 'right': '*/' }}
 
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
@@ -463,15 +524,15 @@ let g:NERDToggleCheckAllLines = 1
 " === coc
 " ===
 let g:coc_global_extensions = [
-      \ 'coc-clangd',
-      \ 'coc-snippets',
-      \ 'coc-json',
-      \ 'coc-pairs']
+  \ 'coc-clangd',
+  \ 'coc-snippets',
+  \ 'coc-json',
+  \ 'coc-pairs']
 
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
@@ -482,7 +543,7 @@ endfunction
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -503,7 +564,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 " nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" noremap <F3> :call CocAction('format')<CR>
 noremap <F2> :CocCommand clangd.switchSourceHeader<CR>
 
 " Use `[g` and `]g` to navigate diagnostics
@@ -535,9 +595,9 @@ let g:UltiSnipsSnippetDirectories = [$HOME.'/.config/nvim/Ultisnips/', $HOME.'/.
 " ===
 " set fenc=
 let g:ale_linters = {
-      \   'cpp': ['g++'],
-      \   'c': ['gcc'],
-      \}
+  \   'cpp': ['g++'],
+  \   'c': ['gcc'],
+  \}
 let g:ale_disable_lsp = 1
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
@@ -594,15 +654,74 @@ noremap <F3> :Neoformat<CR>
 let g:neoformat_basic_format_align = 1
 let g:neoformat_basic_format_retab = 1
 let g:neoformat_c_clangformat = {
-      \ 'exe': 'clang-format',
-      \ 'args': ['-style="{ReflowComments: false}"'],
-      \ }
+  \ 'exe': 'clang-format',
+  \ 'args': ['-style="{ReflowComments: false}"'],
+  \ }
 let g:neoformat_cpp_clangformat = {
-      \ 'exe': 'clang-format',
-      \ 'args': ['-style="{ReflowComments: false}"'],
-      \}
+  \ 'exe': 'clang-format',
+  \ 'args': ['-style="{ReflowComments: false}"'],
+  \}
 let g:neoformat_enabled_cpp = ['clangformat']
 let g:neoformat_enabled_c = ['clangformat']
+
+
+" ===
+" === trouble
+" ===
+lua << END
+require("trouble").setup({
+    position = "bottom", -- position of the list can be: bottom, top, left, right
+    height = 10, -- height of the trouble list when position is top or bottom
+    width = 50, -- width of the list when position is left or right
+    icons = true, -- use devicons for filenames
+    mode = "document_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
+    fold_open = "", -- icon used for open folds
+    fold_closed = "", -- icon used for closed folds
+    action_keys = {
+      -- key mappings for actions in the trouble list
+      -- map to {} to remove a mapping, for example:
+      -- close = {},
+      close = "q", -- close the list
+      cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
+      refresh = "r", -- manually refresh
+      jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
+      open_split = { "<c-x>" }, -- open buffer in new split
+      open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+      open_tab = { "<c-t>" }, -- open buffer in new tab
+      jump_close = { "o" }, -- jump to the diagnostic and close the list
+      toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+      toggle_preview = "P", -- toggle auto_preview
+      hover = "K", -- opens a small popup with the full multiline message
+      preview = "p", -- preview the diagnostic location
+      close_folds = { "zM", "zm" }, -- close all folds
+      open_folds = { "zR", "zr" }, -- open all folds
+      toggle_fold = { "zA", "za" }, -- toggle fold of current file
+      previous = "k", -- preview item
+      next = "j", -- next item
+    },
+    indent_lines = true, -- add an indent guide below the fold icons
+    auto_open = false, -- automatically open the list when you have diagnostics
+    auto_close = false, -- automatically close the list when you have no diagnostics
+    auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+    auto_fold = false, -- automatically fold a file trouble list at creation
+    signs = {
+      -- icons / text used for a diagnostic
+      error = "",
+      warning = "",
+      hint = "",
+      information = "",
+      other = "﫠",
+    },
+    use_lsp_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
+  })
+END
+
+nnoremap <leader>xx <cmd>TroubleToggle<cr>
+nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
+nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
+nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
 
 
 " ===
@@ -625,11 +744,11 @@ function RToc()
 endfunction
 
 let g:bullets_enabled_file_types = [
-      \ 'markdown',
-      \ 'text',
-      \ 'gitcommit',
-      \ 'scratch'
-      \]
+  \ 'markdown',
+  \ 'text',
+  \ 'gitcommit',
+  \ 'scratch'
+  \]
 
 " vim-table-mode
 noremap <leader>tm :TableModeToggle<CR>
