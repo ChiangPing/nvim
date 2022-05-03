@@ -8,6 +8,7 @@ set clipboard=unnamedplus
 " avoid the background error
 let &t_ut=''
 set noautochdir
+set mouse=a
 
 "Grep
 " set grepprg=rg\ --vimgrep\ --smart-case\ --follow
@@ -67,7 +68,7 @@ set formatoptions-=tc
 set noshowmode
 set inccommand=split
 set wildmenu
-set cmdheight=2
+set cmdheight=1
 
 " other
 set completeopt=longest,noinsert,menuone,noselect,preview
@@ -78,11 +79,12 @@ set lazyredraw "same as above"
 " backup and undo
 set nobackup
 set nowritebackup
-" silent !mkdir -p ~/.config/nvim/tmp/backup
 silent !mkdir -p ~/.config/nvim/tmp/undo
-"silent !mkdir -p ~/.config/nvim/tmp/sessions
+silent !mkdir -p ~/.config/nvim/tmp/sessions
+" silent !mkdir -p ~/.config/nvim/tmp/backup
 " set backupdir=~/.config/nvim/tmp/backup,.
 " set directory=~/.config/nvim/tmp/backup,.
+
 if has('persistent_undo')
   set undofile
   set undodir=~/.config/nvim/tmp/undo,.
@@ -101,6 +103,8 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 let mapleader=" "
 
 " Save & quit
+noremap <LEADER>w :w<CR>
+map w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 noremap <LEADER>q :q<CR>
 noremap <C-q> :qa<CR>
 
@@ -125,14 +129,10 @@ noremap <C-j> 5j
 " ===
 " === Insert Mode Cursor Movement
 " ===
-inoremap <C-l> <Right>
-inoremap <C-h> <Left>
-inoremap <C-a> <Home>
-inoremap <C-e> <End>
-inoremap <C-p> <Up>
-inoremap <C-n> <Down>
-inoremap <C-b> <PageUp>
-inoremap <C-f> <PageDown>
+inoremap <A-l> <Right>
+inoremap <A-h> <Left>
+inoremap <A-k> <Up>
+inoremap <A-j> <Down>
 
 inoremap <C-a> <ESC>A
 " inoremap <C-f> <ESC>0<insert>
@@ -140,14 +140,12 @@ inoremap <C-a> <ESC>A
 " ===
 " === Command Mode Cursor Movement
 " ===
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
-cnoremap <C-h> <Left>
-cnoremap <C-l> <Right>
-cnoremap <M-b> <S-Left>
-cnoremap <M-w> <S-Right>
+cnoremap <A-k> <Up>
+cnoremap <A-j> <Down>
+cnoremap <A-h> <Left>
+cnoremap <A-l> <Right>
+cnoremap <C-b> <S-Left>
+cnoremap <C-w> <S-Right>
 
 
 " ===
@@ -172,37 +170,17 @@ noremap <left> :vertical resize-5<CR>
 noremap <right> :vertical resize+5<CR>
 
 " Place the two screens up and down
-noremap so <C-w>t<C-w>K
+noremap tk <C-w>t<C-w>K
 " Place the two screens side by side
-noremap sv <C-w>t<C-w>H
+noremap th <C-w>t<C-w>H
 
 " Rotate screens
-noremap srh <C-w>b<C-w>K
-noremap srv <C-w>b<C-w>H
-
-
-" ===
-" === Tab/Buffer management
-" ===
-" Buffers
-" nnoremap <silent> tl :ls<CR>
-nnoremap <silent> <LEADER>b :enew<CR>
-nnoremap <silent> Q :bdelete<CR>
-" Create a new tab with tu
-noremap tu :tabe<CR>
-noremap tU :tab split<CR>
-" Move around tabs with tn and ti
-noremap tn :-tabnext<CR>
-noremap ti :+tabnext<CR>
-" Move the tabs with tmn and tmi
-noremap tmn :-tabmove<CR>
-noremap tmi :+tabmove<CR>
+noremap bk <C-w>b<C-w>K
+noremap bh <C-w>b<C-w>H
 
 " ===
 " === Others useful stuff
 " ===
-" noremap <LEADER>W :%s/\s\+$//<CR>:let @/=''<CR>
-noremap <LEADER>w :w<CR>
 noremap <LEADER>m :marks<CR>
 
 " Opening a terminal window
@@ -261,6 +239,10 @@ Plug 'ludovicchabant/vim-gutentags'
 
 
 " display
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
+
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-surround'
@@ -314,7 +296,7 @@ let g:startify_change_to_dir = 0
 " ===
 " === Undotree
 " ===
-nnoremap <F5> :UndotreeToggle<CR>
+nnoremap <leader>u :UndotreeToggle<CR>
 
 
 " ===
@@ -371,39 +353,66 @@ let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 
 
 " ===
+" === colorscheme
+" ===
+autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE " transparent bg
+colorscheme catppuccin
+
+
+" ===
+" === bufferline
+" ===
+lua << EOF
+require("bufferline").setup({
+        options = {
+            numbers = "ordinal",
+            modified_icon = "✥",
+            buffer_close_icon = "",
+            left_trunc_marker = "",
+            right_trunc_marker = "",
+            max_name_length = 14,
+            max_prefix_length = 13,
+            tab_size = 20,
+            show_buffer_close_icons = true,
+            show_buffer_icons = true,
+            show_tab_indicators = true,
+            diagnostics = "nvim_lsp",
+            always_show_bufferline = true,
+            separator_style = "thin",
+            offsets = {
+                {
+                    filetype = "NvimTree",
+                    text = "File Explorer",
+                    text_align = "center",
+                    padding = 1,
+                },
+            },
+        },
+    })
+EOF
+
+nnoremap <silent><leader>= :BufferLineCycleNext<CR>
+nnoremap <silent><leader>- :BufferLineCyclePrev<CR>
+
+nnoremap <silent><leader>1 :BufferLineGoToBuffer 1<CR>
+nnoremap <silent><leader>2 :BufferLineGoToBuffer 2<CR>
+nnoremap <silent><leader>3 :BufferLineGoToBuffer 3<CR>
+nnoremap <silent><leader>4 :BufferLineGoToBuffer 4<CR>
+nnoremap <silent><leader>5 :BufferLineGoToBuffer 5<CR>
+nnoremap <silent><leader>6 :BufferLineGoToBuffer 6<CR>
+nnoremap <silent><leader>7 :BufferLineGoToBuffer 7<CR>
+nnoremap <silent><leader>8 :BufferLineGoToBuffer 8<CR>
+nnoremap <silent><leader>9 :BufferLineGoToBuffer 9<CR>
+
+" These commands will sort buffers by directory, language, or a custom criteria
+nnoremap <silent>be :BufferLineSortByExtension<CR>
+nnoremap <silent>bd :BufferLineSortByDirectory<CR>
+nnoremap <silent><mymap> :lua require'bufferline'.sort_buffers_by(function (buf_a, buf_b) return buf_a.id < buf_b.id end)<CR>
+
+
+" ===
 " === vim-airline
 " ===
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
-nmap <leader>6 <Plug>AirlineSelectTab6
-nmap <leader>7 <Plug>AirlineSelectTab7
-nmap <leader>8 <Plug>AirlineSelectTab8
-nmap <leader>9 <Plug>AirlineSelectTab9
-nmap <leader>- <Plug>AirlineSelectPrevTab
-nmap <leader>= <Plug>AirlineSelectNextTab
-
-let g:airline#extensions#tabline#buffer_idx_format = {
-      \ '0': '⓪ ',
-      \ '1': '① ',
-      \ '2': '② ',
-      \ '3': '③ ',
-      \ '4': '④ ',
-      \ '5': '⑤ ',
-      \ '6': '⑥ ',
-      \ '7': '⑦ ',
-      \ '8': '⑧ ',
-      \ '9': '⑨ ',
-      \}
-
-" airline symbols
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
@@ -414,7 +423,6 @@ let g:airline_symbols.maxlinenr = '☰ '
 let g:airline_symbols.dirty='⚡'
 
 let g:airline#extensions#whitespace#enabled = 0
-
 
 " ===
 " === rainbow
