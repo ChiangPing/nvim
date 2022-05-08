@@ -213,10 +213,21 @@ Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
 
 " Programming
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'windwp/nvim-autopairs'
 Plug 'preservim/nerdcommenter'
 Plug 'sbdchd/neoformat'
+Plug 'RRethy/vim-illuminate'
 Plug 'folke/trouble.nvim'
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " markdown
@@ -541,7 +552,7 @@ let g:rainbow_active = 1
 
 
 " ===
-" === indentline
+" === indentLine
 " ===
 autocmd FileType json,markdown let g:indentLine_conceallevel = 0
 let g:indent_guides_guide_size = 1  " 指定对齐线的尺寸
@@ -553,55 +564,249 @@ let g:indent_guides_start_level = 2  " 从第二层开始可视化显示缩进
 " ===
 lua <<EOF
 require("trouble").setup({
-    position = "bottom", -- position of the list can be: bottom, top, left, right
-    height = 10, -- height of the trouble list when position is top or bottom
-    width = 50, -- width of the list when position is left or right
-    icons = true, -- use devicons for filenames
-    mode = "document_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
-    fold_open = "", -- icon used for open folds
-    fold_closed = "", -- icon used for closed folds
-    action_keys = {
-      -- key mappings for actions in the trouble list
-      -- map to {} to remove a mapping, for example:
-      -- close = {},
-      close = "q", -- close the list
-      cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
-      refresh = "r", -- manually refresh
-      jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
-      open_split = { "<c-x>" }, -- open buffer in new split
-      open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
-      open_tab = { "<c-t>" }, -- open buffer in new tab
-      jump_close = { "o" }, -- jump to the diagnostic and close the list
-      toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-      toggle_preview = "P", -- toggle auto_preview
-      hover = "K", -- opens a small popup with the full multiline message
-      preview = "p", -- preview the diagnostic location
-      close_folds = { "zM", "zm" }, -- close all folds
-      open_folds = { "zR", "zr" }, -- open all folds
-      toggle_fold = { "zA", "za" }, -- toggle fold of current file
-      previous = "k", -- preview item
-      next = "j", -- next item
-    },
-    indent_lines = true, -- add an indent guide below the fold icons
-    auto_open = false, -- automatically open the list when you have diagnostics
-    auto_close = false, -- automatically close the list when you have no diagnostics
-    auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-    auto_fold = false, -- automatically fold a file trouble list at creation
-    signs = {
-      -- icons / text used for a diagnostic
-      error = "",
-      warning = "",
-      hint = "",
-      information = "",
-      other = "﫠",
-    },
-    use_lsp_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
-  })
+  position = "bottom", -- position of the list can be: bottom, top, left, right
+  height = 10, -- height of the trouble list when position is top or bottom
+  width = 50, -- width of the list when position is left or right
+  icons = true, -- use devicons for filenames
+  mode = "document_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
+  fold_open = "", -- icon used for open folds
+  fold_closed = "", -- icon used for closed folds
+  action_keys = {
+    -- key mappings for actions in the trouble list
+    -- map to {} to remove a mapping, for example:
+    -- close = {},
+    close = "q", -- close the list
+    cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
+    refresh = "r", -- manually refresh
+    jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
+    open_split = { "<c-x>" }, -- open buffer in new split
+    open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+    open_tab = { "<c-t>" }, -- open buffer in new tab
+    jump_close = { "o" }, -- jump to the diagnostic and close the list
+    toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+    toggle_preview = "P", -- toggle auto_preview
+    hover = "K", -- opens a small popup with the full multiline message
+    preview = "p", -- preview the diagnostic location
+    close_folds = { "zM", "zm" }, -- close all folds
+    open_folds = { "zR", "zr" }, -- open all folds
+    toggle_fold = { "zA", "za" }, -- toggle fold of current file
+    previous = "k", -- preview item
+    next = "j", -- next item
+  },
+  indent_lines = true, -- add an indent guide below the fold icons
+  auto_open = false, -- automatically open the list when you have diagnostics
+  auto_close = false, -- automatically close the list when you have no diagnostics
+  auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+  auto_fold = false, -- automatically fold a file trouble list at creation
+  signs = {
+    -- icons / text used for a diagnostic
+    error = "",
+    warning = "",
+    hint = "",
+    information = "",
+    other = "﫠",
+  },
+  use_lsp_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
+})
 EOF
 
 
 " ===
-" === NERD Commenter
+" === lsp-config
+" ===
+lua << EOF
+require("nvim-lsp-installer").setup({
+  ensure_installed = { "clangd" }, -- ensure these servers are always installed
+  automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
+  ui = {
+    icons = {
+      server_installed = "✓",
+      server_pending = "➜",
+      server_uninstalled = "✗"
+    }
+  }
+})
+EOF
+
+" ===
+" === nvim-cmp
+" ===
+set completeopt=menu,menuone,noselect
+lua <<EOF
+vim.cmd([[highlight CmpItemAbbrDeprecated guifg=#D8DEE9 guibg=NONE gui=strikethrough]])
+vim.cmd([[highlight CmpItemKindSnippet guifg=#BF616A guibg=NONE]])
+vim.cmd([[highlight CmpItemKindUnit guifg=#D08770 guibg=NONE]])
+vim.cmd([[highlight CmpItemKindProperty guifg=#A3BE8C guibg=NONE]])
+vim.cmd([[highlight CmpItemKindKeyword guifg=#EBCB8B guibg=NONE]])
+vim.cmd([[highlight CmpItemAbbrMatch guifg=#5E81AC guibg=NONE]])
+vim.cmd([[highlight CmpItemAbbrMatchFuzzy guifg=#5E81AC guibg=NONE]])
+vim.cmd([[highlight CmpItemKindVariable guifg=#8FBCBB guibg=NONE]])
+vim.cmd([[highlight CmpItemKindInterface guifg=#88C0D0 guibg=NONE]])
+vim.cmd([[highlight CmpItemKindText guifg=#81A1C1 guibg=NONE]])
+vim.cmd([[highlight CmpItemKindFunction guifg=#B48EAD guibg=NONE]])
+vim.cmd([[highlight CmpItemKindMethod guifg=#B48EAD guibg=NONE]])
+
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+-- Setup nvim-cmp.
+local cmp = require'cmp'
+cmp.setup({
+  sorting = {
+    comparators = {
+      cmp.config.compare.offset,
+      cmp.config.compare.exact,
+      cmp.config.compare.score,
+      -- require("cmp-under-comparator").under,
+      cmp.config.compare.kind,
+      cmp.config.compare.sort_text,
+      cmp.config.compare.length,
+      cmp.config.compare.order,
+    },
+   },
+  formatting = {
+    format = function(entry, vim_item)
+      local lspkind_icons = {
+        Text = "",
+        Method = "",
+        Function = "",
+        Constructor = "",
+        Field = "",
+        Variable = "",
+        Class = "ﴯ",
+        Interface = "",
+        Module = "",
+        Property = "ﰠ",
+        Unit = "",
+        Value = "",
+        Enum = "",
+        Keyword = "",
+        Snippet = "",
+        Color = "",
+        File = "",
+        Reference = "",
+        Folder = "",
+        EnumMember = "",
+        Constant = "",
+        Struct = "",
+        Event = "",
+        Operator = "",
+        TypeParameter = "",
+      }
+      -- load lspkind icons
+    vim_item.kind = string.format("%s %s", lspkind_icons[vim_item.kind], vim_item.kind)
+
+    vim_item.menu = ({
+      -- cmp_tabnine = "[TN]",
+      buffer = "[BUF]",
+      orgmode = "[ORG]",
+      nvim_lsp = "[LSP]",
+      nvim_lua = "[LUA]",
+      path = "[PATH]",
+      tmux = "[TMUX]",
+      vsnip = "[SNIP]",
+      spell = "[SPELL]",
+    })[entry.source.name]
+
+      return vim_item
+    end,
+  },
+    -- You can set mappings if you want
+  mapping = cmp.mapping.preset.insert({
+    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-e>"] = cmp.mapping.close(),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }),
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      --require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+      -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+    end,
+  },
+  
+  window = {
+    -- completion = cmp.config.window.bordered(),
+    -- documentation = cmp.config.window.bordered(),
+  },
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "nvim_lua" },
+    { name = "vsnip" },
+    { name = "path" },
+    { name = "spell" },
+    { name = "tmux" },
+    { name = "orgmode" },
+    { name = "buffer" },
+    { name = "latex_symbols" },
+    -- {name = 'cmp_tabnine'}
+  },
+})
+
+-- Set configuration for specific filetype.
+cmp.setup.filetype('gitcommit', {
+  sources = cmp.config.sources({
+    { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+  }, {
+    { name = 'buffer' },
+  })
+})
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+-- Setup lspconfig.
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+require('lspconfig')['clangd'].setup {
+  capabilities = capabilities
+}
+EOF
+
+
+" ===
+" === nerdcommenter
 " ===
 let g:NERDCreateDefaultMappings = 1
 let g:NERDSpaceDelims = 1
@@ -637,6 +842,30 @@ let g:neoformat_cpp_clangformat = {
       \}
 let g:neoformat_enabled_cpp = ['clangformat']
 let g:neoformat_enabled_c = ['clangformat']
+
+
+" ===
+" === illuminate
+" ===
+lua << EOF
+require'lspconfig'.gopls.setup {
+  on_attach = function(client)
+    vim.g.Illuminate_highlightUnderCursor = 0
+    vim.g.Illuminate_ftblacklist = {
+      "help",
+      "dashboard",
+      "alpha",
+      "packer",
+      "norg",
+      "DoomInfo",
+      "NvimTree",
+      "Outline",
+      "toggleterm",
+    }
+    require 'illuminate'.on_attach(client)
+  end,
+}
+EOF
 
 
 " ===
